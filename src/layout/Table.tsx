@@ -19,11 +19,10 @@ export const Table: FC<TableProps> = memo(({ columns, children }) => {
           {
             columns.map((column, index) => {
 
-              const bgColorClass = index % 2 === 0 ? `bg-gray-50 dark:bg-gray-800` : ``;
-              const widthClass = column.width ? `w-[${column.width}px]` : ``;
+              const bgColorClass = index % 2 === 0 ? ` bg-gray-50 dark:bg-gray-800` : ``;
 
               return (
-                <th key={crypto.randomUUID()} className={`px-6 py-3 ${bgColorClass} ${widthClass}`}>
+                <th key={crypto.randomUUID()} className={`px-6 py-3${bgColorClass}`} style={{ width: column.width, }}>
                   {column.name}
                 </th>
               );

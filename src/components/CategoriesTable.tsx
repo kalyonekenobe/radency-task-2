@@ -15,10 +15,10 @@ type CategoriesTableRowProps = {
 const CategoriesTable: FC<CategoriesTableProps> = memo(({ categories }) => {
 
   const notes = useSelector(getAllNotes);
-  let extendedCategories: Category[] = structuredClone(categories).map((category: Category) => {
+  const extendedCategories: Category[] = structuredClone(categories).map((category: Category) => {
     category.notes = notes.filter(note => note.category.id === category.id);
     return category;
-  });;
+  });
 
   return (
     <div className="relative overflow-x-auto sm:rounded-lg border border-slate-200 categories-table">

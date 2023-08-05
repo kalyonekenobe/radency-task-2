@@ -31,7 +31,16 @@ export class NoteHandler {
       dates: content.match(DATE_REGEX) ?? [],
       isArchived: false,
       createdAt: Date.now(),
-    }
+    };
+  }
+
+  static normalize(note: Note): Note {
+    NoteHandler.validate(note);
+
+    return {
+      ...note,
+      dates: note.content.match(DATE_REGEX) ?? []
+    };
   }
 
   static validate(note: Note): void {

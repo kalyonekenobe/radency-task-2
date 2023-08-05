@@ -1,32 +1,56 @@
-import React, {FC, memo, useCallback} from "react";
+import React, {FC, memo, useCallback, useState} from "react";
 import {Table} from "../layout/Table";
 import {Note} from "../types/note.types";
 import {useDispatch} from "../hooks/redux.hooks";
 import {removeNote, updateNote} from "../redux/notes/note.slice";
+import EditNoteForm from "./EditNoteForm";
 
 type NotesTableProps = {
   notes: Note[],
 };
 
+type NotesTableState = {
+  showEditNoteForm: boolean,
+  editedNote?: Note
+};
+
 type NotesTableRowProps = {
   note: Note,
+  handleOnClickEditButton: (note: Note) => any,
+};
+
+const initialState: NotesTableState = {
+  showEditNoteForm: false,
 };
 
 const NotesTable: FC<NotesTableProps> = memo(({ notes }) => {
 
+  const [state, setState] = useState(initialState);
+
   return (
     <div className="relative overflow-x-auto sm:rounded-lg border border-slate-200 notes-table">
+      {
+        state.showEditNoteForm && state.editedNote &&
+        <EditNoteForm note={state.editedNote} onClose={() => setState({ ...state, showEditNoteForm: false })} />
+      }
       <Table columns={[
-        { name: 'Name', width: 250, },
-        { name: 'Created', },
-        { name: 'Category', },
-        { name: 'Content', width: 500, },
-        { name: 'Dates', width: 200, },
-        { name: 'Actions', width: 150, },
+          { name: 'Name', width: 250, },
+          { name: 'Created', },
+          { name: 'Category', },
+          { name: 'Content', width: 500, },
+          { name: 'Dates', width: 200, },
+          { name: 'Actions', width: 150, },
       ]}>
         {
           notes.map(note => (
-            <NotesTableRow note={note} key={crypto.randomUUID()} />
+            <NotesTableRow note={note}
+                           handleOnClickEditButton={note => setState({
+                             ...state,
+                             editedNote: note,
+                             showEditNoteForm: true
+                           })}
+                           key={crypto.randomUUID()}
+            />
           ))
         }
       </Table>
@@ -34,21 +58,25 @@ const NotesTable: FC<NotesTableProps> = memo(({ notes }) => {
   );
 });
 
-const NotesTableRow: FC<NotesTableRowProps> = memo(({ note }) => {
+const NotesTableRow: FC<NotesTableRowProps> = memo(({ note, handleOnClickEditButton }) => {
 
   const dispatch = useDispatch();
 
   const handleRemoveNote = useCallback((note: Note) => {
-    dispatch(removeNote(note));
+    try {
+      dispatch(removeNote(note));
+    } catch (error) {
+      alert(`Note removal error: ${error}`);
+    }
   }, [dispatch]);
 
   const handleChangeIsArchivedNote = useCallback((note: Note, isArchived: boolean) => {
-    dispatch(updateNote({ ...note, isArchived }));
+    try {
+      dispatch(updateNote({ ...note, isArchived }));
+    } catch (error) {
+      alert(`Note updating error: ${error}`);
+    }
   }, [dispatch]);
-
-  const handleEditNote = useCallback((note: Note) => {
-
-  }, []);
 
   return (
     <tr className={`hover:cursor-pointer group group/note vertical-center ${note.isArchived ? `archived` : ``} `}>
@@ -83,7 +111,7 @@ const NotesTableRow: FC<NotesTableRowProps> = memo(({ note }) => {
       </td>
       <td className="px-6 py-4 group-[.archived]:bg-emerald-50">
         <div className="flex w-full h-full justify-around align-stretch">
-          <span className="button hover:text-yellow-500 edit-note" onClick={() => handleEditNote(note)}>
+          <span className="button hover:text-yellow-500 edit-note" onClick={() => handleOnClickEditButton(note)}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
                  stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round"
