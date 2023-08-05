@@ -1,31 +1,33 @@
-export interface ICategory {
+import {Note} from "./note.types";
+
+export interface Category {
   id: string,
   name: string,
-  validate(): void,
+  notes: Note[],
 };
 
-export class Category implements ICategory {
+export class CategoryHandler {
 
-  id: string;
-  name: string;
-
-  constructor(name: string) {
+  static create(name: string): Category {
 
     if (!name.trim()) {
       throw new Error('Category name cannot be empty!');
     }
 
-    this.id = crypto.randomUUID();
-    this.name = name;
+    return {
+      id: crypto.randomUUID(),
+      name: name,
+      notes: [],
+    };
   }
 
-  validate(): void {
+  static validate(category: Category): void {
 
-    if (!this.id?.trim()) {
+    if (!category.id?.trim()) {
       throw new Error('Category id cannot be empty!');
     }
 
-    if (!this.name?.trim()) {
+    if (!category.name?.trim()) {
       throw new Error('Category name cannot be empty!');
     }
   }

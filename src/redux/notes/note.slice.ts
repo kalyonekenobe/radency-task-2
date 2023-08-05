@@ -1,7 +1,6 @@
-import {INote, Note} from "../../types/note.types";
+import {Note, NoteHandler} from "../../types/note.types";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../store";
-import {ICategory} from "../../types/category.types";
 import {defaultNotes} from "../../utils/mock-data";
 
 type NotesState = {
@@ -21,7 +20,7 @@ export const notesSlice = createSlice({
     createNote: (state, action: PayloadAction<Note>) => {
       try {
         const note = action.payload;
-        note.validate();
+        NoteHandler.validate(note);
 
         return { ...state, notes: [ ...state.notes, note ], errors: [] };
       } catch (error: any) {
@@ -33,7 +32,7 @@ export const notesSlice = createSlice({
         const note = action.payload;
         const noteInStorage = state.notes.find(storageNote => storageNote.id === note.id);
 
-        note.validate();
+        NoteHandler.validate(note);
 
         if (!noteInStorage) {
           throw new Error('Cannot find note with such id!');
@@ -79,12 +78,8 @@ export const getAllNotes = (state: RootState): Note[] => {
   return state.notes.notes;
 };
 
-export const getNoteById = (id: INote['id']) => (state: RootState): Note | undefined => {
-  return state.notes.notes.find((note: Note) => note.id === id);
-};
-
-export const getNotesByCategoryId = (id: ICategory['id']) => (state: RootState): Note[] => {
-  return state.notes.notes.filter((note: Note) => note.category.id === id);
+export const getNoteById = (id: Note['id']) => (state: RootState): Note | undefined => {
+  return state.notes.notes.find(note => note.id === id);
 };
 
 export const { createNote, updateNote, removeNote, removeNoteById } = notesSlice.actions;
