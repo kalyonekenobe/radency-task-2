@@ -3,6 +3,7 @@ import NotesTable from "./NotesTable";
 import ToggleButton from "./ToggleButton";
 import {Note} from "../types/note.types";
 import CreateNoteForm from "./CreateNoteForm";
+import Button from "./Button";
 
 type NotesTableWithUserControlsProps = {
   notes: Note[],
@@ -38,11 +39,7 @@ const NotesTableWithUserControls: FC<NotesTableWithUserControlsProps> = memo(({ 
                       isActive={false}
                       callback={showArchivedNotes => setState({ ...state, showArchivedNotes: showArchivedNotes})}
         />
-        <span className="button create-note bg-emerald-500 hover:bg-emerald-400 rounded-md cursor-pointer px-10 py-1 flex text-white font-semibold"
-              onClick={() => handleShowCreateNoteForm()}
-        >
-            Create note
-          </span>
+        <Button theme={'emerald'} handleOnClick={() => handleShowCreateNoteForm()} value={'Create note'} />
       </div>
     </>
   );

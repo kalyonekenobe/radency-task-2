@@ -1,4 +1,5 @@
 import React, {FC, memo, useState} from "react";
+import Button from "./Button";
 
 type ToggleButtonProps = {
   activeValue: string,
@@ -22,17 +23,9 @@ const ToggleButton: FC<ToggleButtonProps> = memo(({ activeValue, disabledValue, 
 
   return (
     state.isActive ?
-      <span className="button me-2 bg-white outline outline-[1px] outline-slate-300 hover:bg-slate-100 rounded-md cursor-pointer px-10 py-1 text-slate-500 flex font-semibold"
-         onClick={() => handleOnClick()}
-      >
-        {activeValue}
-      </span>
+      <Button theme={'dark'} handleOnClick={() => handleOnClick()} value={activeValue} className={'me-2'} />
       :
-      <span className="button me-2 bg-slate-600 hover:bg-slate-500 rounded-md cursor-pointer px-10 py-1 flex text-white font-semibold"
-         onClick={() => handleOnClick()}
-      >
-        {disabledValue}
-      </span>
+      <Button theme={'white'} handleOnClick={() => handleOnClick()} value={disabledValue} className={'me-2'} />
   );
 });
 
